@@ -90,7 +90,7 @@ return array(
 ### Usage
 ```php
 $name = 'name-file.txt';
-$source = '/source/path//file.txt';
+$source = '/source/path/file.txt';
 $folder = '/folder/destino';
 $override = true;
 $bool = FileStorage::save($name, $source, $folder, $override);
