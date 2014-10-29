@@ -20,6 +20,7 @@
         "psr-0": {
             "NwLaravel": "src/"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
 
