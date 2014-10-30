@@ -120,16 +120,16 @@ class FileStorage extends BaseFileStorage
     public function uploadTmp($field, UploadedFile $file, $random = false, $mimes = null)
     {
         $messages = array("{$field}.max" => 'O :attribute deve ser menor que ' . $this->getMaxSize().'Mb');
-        $rules = array('max' => $this->getMaxSize()*1024);
+        $rules = array('max:'.$this->getMaxSize()*1024);
 
-        if ( !is_null($mimes) ) $rules['mimes'] = $mimes;
+        if ( !is_null($mimes) ) $rules[]="mimes:{$mimes}";
 
         $validator = Validator::make(
             array($field => $file),
             array($field => $rules),
             $messages
         );
-        
+
         if ($validator->fails()) {
             throw new FileStorageException($validator->messages(), 3);
         }

@@ -195,7 +195,7 @@ class FileStorageTest extends PHPUnit_Framework_TestCase
             ->once()
             ->andReturn('Msg Error');
 
-        $rules = array('max' => $sizeDefault*1024);
+        $rules = array('max:'.$sizeDefault*1024);
 
         Validator::shouldReceive('make')
             ->once()
@@ -241,7 +241,7 @@ class FileStorageTest extends PHPUnit_Framework_TestCase
             ->andReturn(false);
 
         $size = 3;
-        $rules = array('max' => $size*1024, 'mimes' => 'doc,txt');
+        $rules = array('max:'.($size*1024), 'mimes:doc,txt');
         Validator::shouldReceive('make')
             ->once()
             ->with(array($field => $file), array($field => $rules), array("{$field}.max" => "O :attribute deve ser menor que {$size}Mb"))
