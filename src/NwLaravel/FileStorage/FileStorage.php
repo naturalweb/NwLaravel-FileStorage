@@ -124,15 +124,12 @@ class FileStorage extends BaseFileStorage
 
         if ( !is_null($mimes) ) $rules['mimes'] = $mimes;
 
-//dd(array($field => $file), array($field => $rules), $messages);
         $validator = Validator::make(
             array($field => $file),
             array($field => $rules),
             $messages
         );
-
         
-
         if ($validator->fails()) {
             throw new FileStorageException($validator->messages(), 3);
         }
