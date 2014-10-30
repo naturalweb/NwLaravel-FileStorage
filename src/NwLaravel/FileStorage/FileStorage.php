@@ -45,14 +45,15 @@ class FileStorage extends BaseFileStorage
     /**
      * uploadImageFile
      * 
+     * @param string       $field
      * @param UploadedFile $file
-     * @param int $width
-     * @param int $height
-     * @param bool $random
+     * @param integer      $width
+     * @param integer      $height
+     * @param bool         $random
      * 
      * @return array (name => '', path => '')
      */
-    public function uploadImage(UploadedFile $file, $folderRemote, $width, $height, $random = false)
+    public function uploadImage($field, UploadedFile $file, $folderRemote, $width, $height, $random = false)
     {
         $mimes = 'jpeg,jpg,png,gif';
 
@@ -61,7 +62,7 @@ class FileStorage extends BaseFileStorage
             throw new FileStorageException("Formato de imagem inválido, somente aceitos os ({$mimes})", 1);
         }
 
-        $dados = $this->uploadTmp($file, $random, $mimes);
+        $dados = $this->uploadTmp($field, $file, $random, $mimes);
         
         if ( ! Image::resize($dados['path'], $width, $height) )
         {
@@ -76,14 +77,17 @@ class FileStorage extends BaseFileStorage
     /**
      * Upload File
      * 
+     * @param string       $field
      * @param UploadedFile $file
+     * @param string       $folderRemote
      * @param bool         $random
+     * @param string       $mimes
      * 
      * @return array (name => '', path => '')
      */
-    public function uploadFile(UploadedFile $file, $folderRemote, $random = false, $mimes = null)
+    public function uploadFile($field, UploadedFile $file, $folderRemote, $random = false, $mimes = null)
     {
-        $dados = $this->uploadTmp($file, $random, $mimes);
+        $dados = $this->uploadTmp($field, $file, $random, $mimes);
 
         return $this->saveStorage($dados, $folderRemote);
     }
@@ -106,20 +110,28 @@ class FileStorage extends BaseFileStorage
     /**
      * UploadTmp
      * 
+     * @param string       $field
      * @param UploadedFile $file
      * @param bool         $random
+     * @param string       $mimes
      * 
      * @return array (name => '', path => '')
      */
-    public function uploadTmp(UploadedFile $file, $random = false, $mimes = null)
+    public function uploadTmp($field, UploadedFile $file, $random = false, $mimes = null)
     {
-        $rules = array('max' => $this->getMaxSize());
+        $messages = array("{$field}.max" => 'O :attribute deve ser menor que ' . $this->getMaxSize().'Mb');
+        $rules = array('max' => $this->getMaxSize()*1024);
+
         if ( !is_null($mimes) ) $rules['mimes'] = $mimes;
 
+//dd(array($field => $file), array($field => $rules), $messages);
         $validator = Validator::make(
-            array('file' => $file),
-            array('file' => $rules)
+            array($field => $file),
+            array($field => $rules),
+            $messages
         );
+
+        
 
         if ($validator->fails()) {
             throw new FileStorageException($validator->messages(), 3);
