@@ -22,7 +22,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot()
     {
-        $this->package('naturalweb/nwlaravel');
+        $this->package('naturalweb/nwlaravel-filestorage');
     }
     
     /**
@@ -36,7 +36,7 @@ class ServiceProvider extends BaseServiceProvider
 
         $this->app->bind('nwlaravel.filestorage', function($app) use($me)
         {
-            $config = $app['config']->get('nwlaravel::filestorage');
+            $config = $app['config']->get('nwlaravel-filestorage::filestorage');
 
             $me->registerStorage($config);
 
@@ -55,13 +55,13 @@ class ServiceProvider extends BaseServiceProvider
     {
         switch ($config['default']) {
             case 'filesystem':
-                return $this->registerFileSystemStorage($config);
+                return $this->registerFileSystemStorage($config['storages']['filesystem']);
 
             case 's3':
-                return $this->registerS3Storage($config);
+                return $this->registerS3Storage($config['storages']['s3']);
 
             case 'dropbox':
-                return $this->registerDropboxStorage($config);
+                return $this->registerDropboxStorage($config['storages']['dropbox']);
             
             default:
                 throw new \InvalidArgumentException('Invalid storage filestorage.');
