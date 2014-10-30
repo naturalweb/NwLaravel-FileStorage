@@ -100,7 +100,7 @@ class ServiceProvider extends BaseServiceProvider
                 'secret' => $config['secret']
             ));
 
-            return new S3Storage($config['root'], $dropbox);
+            return new S3Storage($config['root'], $s3);
         });
     }
 
